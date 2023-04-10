@@ -1,3 +1,4 @@
+using System;
 using BlackRece;
 using BlackRece.ProjectilePooler;
 using UnityEngine;
@@ -6,30 +7,32 @@ using UnityEngine;
 public class FirstPersonController : MonoBehaviour
 {
     [Header("PlayerController")]
-    [SerializeField] private Camera _camera;
-    [SerializeField, Range(1, 10)] float walkingSpeed = 3.0f;
-    [SerializeField, Range(2, 20)] float runingSpeed = 4.0f;
-    [SerializeField, Range(0, 20)] float jumpSpeed = 6.0f;
-    [SerializeField, Range(0.5f, 10)] float lookSpeed = 2.0f;
-    [SerializeField, Range(10, 120)] float lookXLimit = 80.0f;
-    [SerializeField] bool inverseY = false;
+    [SerializeField] private Camera _Camera;
+    [SerializeField, Range(1, 10)] private float _WalkingSpeed = 3.0f;
+    [SerializeField, Range(2, 20)] private float _RunningSpeed = 4.0f;
+    [SerializeField, Range(0, 20)] private float _JumpSpeed = 6.0f;
+    [SerializeField, Range(0.5f, 10)] private float _LookSpeed = 2.0f;
+    [SerializeField, Range(10, 120)] private float _LookXLimit = 80.0f;
+    [SerializeField, Range(1, 100)] private float _ActionRange = 10.0f;
+    [SerializeField] private bool _InverseY = false;
 
     [Space(20)] [Header("Advance")]
-    [SerializeField] private bool isJumping;
-    [SerializeField] private bool isFiring;
-    [SerializeField] private float gravity = 20.0f;
+    [SerializeField] private bool _IsJumping;
+    [SerializeField] private bool _IsFiring;
+    [SerializeField] private float _Gravity = 20.0f;
     [SerializeField] private float timeToRunning = 2.0f;
     [HideInInspector] public bool canMove = true;
-    [HideInInspector] public bool CanRunning = true;
+    [HideInInspector] public bool _CanRunning = true;
     
     private ProjectilePooler _pooler;
-    private CharacterController characterController;
-    private Vector3 moveDirection;
-    private Vector3 rotation;
-    private bool isRunning;
-    private float moveSpeed;
+    private CharacterController _characterController;
+    private Vector3 _moveDirection;
+    private Vector3 _rotation;
+    private bool _isRunning;
+    private float _moveSpeed;
     private Quaternion _projectileRotation;
     private static Vector3 _position;
+    [SerializeField] private Podium.PodiumIDs _podium;
 
     public static Vector3 GetPlayerPosition() => _position;
     
@@ -38,20 +41,12 @@ public class FirstPersonController : MonoBehaviour
     private static bool _isInArena = true;
     [SerializeField] private bool _ArenaFlag;
 
-    public void HandleTeleport(Vector3 pos, bool isArena)
-    {
-        characterController.enabled = false;
-        transform.position = pos;
-        _IsInArena = isArena;
-        characterController.enabled = true;
-    }
-    
     private void Awake()
     {
-        if (_camera == null)
-            _camera = GetComponentInChildren<Camera>();
+        if (_Camera == null)
+            _Camera = GetComponentInChildren<Camera>();
         
-        characterController = GetComponent<CharacterController>();
+        _characterController = GetComponent<CharacterController>();
         _pooler = GetComponent<ProjectilePooler>();
     }
 
@@ -60,8 +55,9 @@ public class FirstPersonController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         
-        rotation = _camera.transform.localRotation.eulerAngles;
+        _rotation = _Camera.transform.localRotation.eulerAngles;
         _pooler.Init();
+        _podium = Podium.PodiumIDs.None;
     }
 
     private void Update()
@@ -69,20 +65,42 @@ public class FirstPersonController : MonoBehaviour
         HandleMouseAim();
         HandleMovement();
         HandleActions();
+        HandlePodiumInteraction();
         
         _position = transform.position;
         _ArenaFlag = _isInArena;
     }
-    
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.TryGetComponent<Podium>(out var podium))
+        {
+            _podium = podium.GetPodiumID();
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        _podium = Podium.PodiumIDs.None;
+    }
+
+    public void HandleTeleport(Vector3 pos, bool isArena)
+    {
+        _characterController.enabled = false;
+        transform.position = pos;
+        _IsInArena = isArena;
+        _characterController.enabled = true;
+    }
+
     private void HandleMouseAim()
     {
-        var lookVertical = Input.GetAxis("Mouse Y") * lookSpeed;
-        rotation.x += inverseY ? -lookVertical : lookVertical;
-        rotation.x = Mathf.Clamp(rotation.x, -lookXLimit, lookXLimit);
-        rotation.y = Input.GetAxis("Mouse X") * lookSpeed;
+        var lookVertical = Input.GetAxis("Mouse Y") * _LookSpeed;
+        _rotation.x += _InverseY ? -lookVertical : lookVertical;
+        _rotation.x = Mathf.Clamp(_rotation.x, -_LookXLimit, _LookXLimit);
+        _rotation.y = Input.GetAxis("Mouse X") * _LookSpeed;
         
-        _camera.transform.localRotation = Quaternion.Euler(rotation.x, 0, 0);
-        transform.rotation *= Quaternion.Euler(0, rotation.y, 0);
+        _Camera.transform.localRotation = Quaternion.Euler(_rotation.x, 0, 0);
+        transform.rotation *= Quaternion.Euler(0, _rotation.y, 0);
     }
 
     private void HandleMovement()
@@ -90,30 +108,30 @@ public class FirstPersonController : MonoBehaviour
         var forward = transform.TransformDirection(Vector3.forward);
         var right = transform.TransformDirection(Vector3.right);
         
-        isJumping = !characterController.isGrounded;
-        if (!characterController.isGrounded)
-            moveDirection.y -= gravity * Time.deltaTime;
+        _IsJumping = !_characterController.isGrounded;
+        if (!_characterController.isGrounded)
+            _moveDirection.y -= _Gravity * Time.deltaTime;
 
-        var moveDirectionY = moveDirection.y;
-        moveSpeed = isRunning ? runingSpeed : walkingSpeed;
-        moveDirection = (forward * Input.GetAxis("Vertical") + right * Input.GetAxis("Horizontal")) * moveSpeed;
+        var moveDirectionY = _moveDirection.y;
+        _moveSpeed = _isRunning ? _RunningSpeed : _WalkingSpeed;
+        _moveDirection = (forward * Input.GetAxis("Vertical") + right * Input.GetAxis("Horizontal")) * _moveSpeed;
         
-        if (characterController.isGrounded && Input.GetButton("Jump"))
-            moveDirection.y += jumpSpeed;
+        if (_characterController.isGrounded && Input.GetButton("Jump"))
+            _moveDirection.y += _JumpSpeed;
         else
-            moveDirection.y = moveDirectionY;
+            _moveDirection.y = moveDirectionY;
         
-        characterController.Move(moveDirection * Time.deltaTime);
+        _characterController.Move(_moveDirection * Time.deltaTime);
     }
     
     private void HandleActions()
     {
         if (Input.GetButtonDown("Fire1"))
         {
-            isFiring = true;
+            _IsFiring = true;
             // Transform tTransform = transform;
             // tTransform.rotation = _camera.transform.rotation;
-            var camrot = _camera.transform.localRotation.eulerAngles;
+            var camrot = _Camera.transform.localRotation.eulerAngles;
             var plyrot = transform.rotation.eulerAngles;
             var rot = new Vector3(camrot.x, plyrot.y, 0.0f);
                 
@@ -123,23 +141,35 @@ public class FirstPersonController : MonoBehaviour
                 .Init(transform.position, rot);
         }
 
-        if (Input.GetButtonUp("Fire2"))
-        {
-            var hit = new RaycastHit();
-            if (Physics.Raycast(_camera.transform.position, _camera.transform.forward, out hit, 100.0f))
-            {
-                Debug.Log(hit.collider.name);
-            }
-        }
-        
         if (Input.GetButtonDown("Fire3"))
         {
-            isRunning = CanRunning ? true : false;
+            _isRunning = _CanRunning ? true : false;
         }
         else if (Input.GetButtonUp("Fire3"))
         {
-            isRunning = false;
-            walkingSpeed = runingSpeed / timeToRunning;
+            _isRunning = false;
+            _WalkingSpeed = _RunningSpeed / timeToRunning;
+        }
+    }
+
+    private void HandlePodiumInteraction()
+    {
+        if (_podium == Podium.PodiumIDs.None)
+        {
+            UIManager.ToggleUpgradePanel(false);
+            return;
+        }
+
+        if (Input.GetButtonUp("Fire2"))
+        {
+            switch (_podium)
+            {
+                case Podium.PodiumIDs.Movement:
+                case Podium.PodiumIDs.Resource:
+                case Podium.PodiumIDs.Weapon:
+                    UIManager.ToggleUpgradePanel(true);
+                    break;
+            }
         }
     }
 }

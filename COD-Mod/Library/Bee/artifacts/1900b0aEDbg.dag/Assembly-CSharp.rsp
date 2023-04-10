@@ -382,9 +382,12 @@
 "Assets/Scripts/Enemy.cs"
 "Assets/Scripts/EnemyManager.cs"
 "Assets/Scripts/FirstPersonController.cs"
+"Assets/Scripts/IInteractable.cs"
+"Assets/Scripts/Podium.cs"
 "Assets/Scripts/Projectile.cs"
 "Assets/Scripts/ProjectilePooler.cs"
 "Assets/Scripts/Teleporter.cs"
+"Assets/Scripts/UIManager.cs"
 -langversion:9.0
 
 /deterministic
