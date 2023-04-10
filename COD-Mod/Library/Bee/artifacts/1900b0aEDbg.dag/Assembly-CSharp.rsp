@@ -388,6 +388,7 @@
 "Assets/Scripts/ProjectilePooler.cs"
 "Assets/Scripts/Teleporter.cs"
 "Assets/Scripts/UIManager.cs"
+"Assets/Scripts/UIResourceStatsManager.cs"
 -langversion:9.0
 
 /deterministic

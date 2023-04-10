@@ -11,6 +11,8 @@ public class Enemy : MonoBehaviour
     private CharacterController _characterController;
     private Vector3 _moveDirection;
     private bool _pauseActions;
+    private int _rank = 0;
+    private int _resourceIncrease = 1;
 
     private void Awake()
     {
@@ -44,7 +46,9 @@ public class Enemy : MonoBehaviour
     
     public void Init(Vector3 pos, Vector3 rot)
     {
-        _health = _maxHealth;
+        _health = _rank < 1 
+            ? _maxHealth
+            : _maxHealth * _rank;
         transform.position = pos;
         transform.rotation = Quaternion.Euler(rot);
         gameObject.SetActive(true);
@@ -53,7 +57,13 @@ public class Enemy : MonoBehaviour
     private void HandleHealth()
     {
         if (_health <= 0)
+        {
+            var resourceAmount = _rank < 1 
+                ? _resourceIncrease
+                : _resourceIncrease * _rank + 1;
+            UIManager.IncreaseAllResources(resourceAmount);
             gameObject.SetActive(false);
+        }
     }
 
     private void HandleMovement()
