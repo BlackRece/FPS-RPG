@@ -43,53 +43,58 @@ A first-person shooter prototype inspired by the *Ameliorama* mod, featuring:
 1. **Clone the repository**:  
    ```bash  
    git clone https://github.com/BlackRece/FPS-RPG.git
-   Open in Unity: Requires Unity 2022.3.11f1 (install via Unity Hub).
+2. Open in Unity: Requires Unity 2022.3.11f1 (install via Unity Hub).
 
-Play: Navigate to the main scene and press Play in the Editor.
+3. Play: Navigate to the main scene and press Play in the Editor.
 
 (Note: No compiled build is available yet.)
 
-🔨 Built With
-Unity 2022.3.11f1
+---
 
-C# for gameplay logic.
+## 🔨 Built With
+- Unity 2022.3.11f1
+- C# for gameplay logic.
+- Unity AI Navigation: Enemy pathfinding.
+- Unity UI: Placeholder HUD elements.
 
-Unity AI Navigation: Enemy pathfinding.
+## 📜 License
+- **Code:** Licensed under GNU GPL v3.0.
+- **Assets:** All assets are original or properly attributed (if third-party).
+- **Credit:** If using code, credit BlackRece and link to this repo.
 
-Unity UI: Placeholder HUD elements.
+---
 
-📜 License
-Code: Licensed under GNU GPL v3.0.
+## 🚧 Roadmap & Known Issues
+### Current Limitations
+- 🐛 Enemies track the player into the safe area.
+- 🔫 Only one weapon available.
+- 🛒 Safe area lacks functionality (portal placeholder only).
 
-Assets: All assets are original or properly attributed (if third-party).
+### Future Plans
+- 🛠️ Fix enemy AI tracking in safe zones.
+- 🛒 Implement weapon/upgrade purchasing system.
+- 👾 Add enemy variety and boss fights.
 
-Credit: If using code, credit BlackRece and link to this repo.
+---
 
-🚧 Roadmap & Known Issues
-Current Limitations
-🐛 Enemies track the player into the safe area.
+## 🙌 Contributions
+- **Code:** Direct contributions are not accepted, but feel free to fork and experiment!
+- **Attribution:** Credit BlackRece if using this project as inspiration.
 
-🔫 Only one weapon available.
+---
 
-🛒 Safe area lacks functionality (portal placeholder only).
+## ✉️ Contact
+- **Portfolio**: [blackrece.co.uk](https://blackrece.co.uk)  
+- **LinkedIn**: [linkedin.com/in/blackrece](https://www.linkedin.com/in/blackrece/)  
+- **GitHub**: [github.com/BlackRece](https://github.com/BlackRece)
 
-Future Plans
-🛠️ Fix enemy AI tracking in safe zones.
+## ✉️ Contact
+[![Portfolio](https://img.shields.io/badge/Portfolio-blackrece.co.uk-%23000000.svg)](https://blackrece.co.uk)  
 
-🛒 Implement weapon/upgrade purchasing system.
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-%230077B5.svg?logo=linkedin)](https://linkedin.com/in/blackrece) 
 
-👾 Add enemy variety and boss fights.
+[![GitHub](https://img.shields.io/badge/GitHub-%23181717.svg?logo=github)](https://github.com/BlackRece)
 
-🙌 Contributions
-Code: Direct contributions are not accepted, but feel free to fork and experiment!
-
-Attribution: Credit BlackRece if using this project as inspiration.
-
-✉️ Contact
-Portfolio: blackrece.co.uk
-
-LinkedIn: linkedin.com/in/blackrece
-
-GitHub: github.com/BlackRece
+---
 
 Enjoy the prototype? Star the repo ⭐ to support development!
