@@ -12,12 +12,14 @@ public class UIManager : MonoBehaviour
     private int _woodAmount;
     private int _stoneAmount;
     private int _metalAmount;
+    private int _goldAmount;
     
     private static float _rankLevel = 0;
     
     private static int _wood;
     private static int _stone;
     private static int _metal;
+    private static int _gold;
     
     private void Awake()
     {
@@ -43,10 +45,12 @@ public class UIManager : MonoBehaviour
         _woodAmount = _wood;
         _stoneAmount = _stone;
         _metalAmount = _metal;
+        _goldAmount = _gold;
         
         UIResourceStatsManager.UpdateWood(_woodAmount);
         UIResourceStatsManager.UpdateStone(_stoneAmount);
         UIResourceStatsManager.UpdateMetal(_metalAmount);
+        UIResourceStatsManager.UpdateCash(_goldAmount);
     }
     
     public static void ToggleUpgradePanel(bool bActive)
@@ -59,6 +63,7 @@ public class UIManager : MonoBehaviour
     
     public static void IncreaseAllResources(int amount)
     {
+        _gold += amount;
         _wood += amount;
         
         if(_rankLevel > 2)
